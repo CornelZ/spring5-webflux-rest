@@ -84,7 +84,7 @@ public class CategoryControllerTest {
 
     webTestClient
         .put()
-        .uri("/api/v1/categories/asdfasdf")
+        .uri("/api/v1/categories/asdfasfd")
         .body(catToUpdateMono, Category.class)
         .exchange()
         .expectStatus()
