@@ -1,5 +1,7 @@
 package guru.springframework.spring5webfluxrest.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import guru.springframework.spring5webfluxrest.domain.Category;
 import guru.springframework.spring5webfluxrest.repositories.CategoryRepository;
 import org.junit.Before;
@@ -67,5 +69,22 @@ public class CategoryControllerTest {
         .exchange()
         .expectStatus()
         .isCreated();
+  }
+
+  @Test
+  public void testUpdate() {
+    BDDMockito //
+        .given(categoryRepository.save(any(Category.class)))
+        .willReturn(Mono.just(Category.builder().build()));
+
+    Mono<Category> catToUpdateMono = Mono.just(Category.builder().description("Some Cat").build());
+
+    webTestClient
+        .put()
+        .uri("/api/v1/categories/asdfasdf")
+        .body(catToUpdateMono, Category.class)
+        .exchange()
+        .expectStatus()
+        .isOk();
   }
 }
