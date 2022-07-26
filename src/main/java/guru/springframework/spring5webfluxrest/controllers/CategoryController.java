@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -44,5 +45,19 @@ public class CategoryController {
   @PutMapping("/api/v1/categories/{id}")
   Mono<Category> update(@PathVariable String id, @RequestBody Category category) {
     return categoryRepository.save(category.setId(id));
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @PatchMapping("/api/v1/categories/{id}")
+  Mono<Category> patch(@PathVariable String id, @RequestBody Category category) {
+
+    Category foundCategory = categoryRepository.findById(id).block();
+
+    if (!foundCategory.getDescription().equalsIgnoreCase(category.getDescription())) {
+      foundCategory.setDescription(category.getDescription());
+      return categoryRepository.save(foundCategory);
+    }
+
+    return Mono.just(foundCategory);
   }
 }
